@@ -1,13 +1,14 @@
-# SPDX-FileCopyrightText: (c) 2020 Artёm iG <github.com/rtmigo>
+# SPDX-FileCopyrightText: (c) 2020 Artёm IG <github.com/rtmigo>
 # SPDX-License-Identifier: MIT
 
-from typing import *
-import unittest
-
-import subprocess, threading, signal
-from subprocess import Popen
-import time
 import os
+import signal
+import subprocess
+import threading
+import time
+import unittest
+from subprocess import Popen
+from typing import *
 
 from func_timeout import func_timeout, FunctionTimedOut
 
@@ -183,8 +184,8 @@ class BackgroundProcess:
 
         while True:
 
-            subprocess = self._waited_subproc()
-            output = subprocess.stdout.readline().decode()
+            sub_process = self._waited_subproc()
+            output = sub_process.stdout.readline().decode()
             # print(output)
             if output == '':
                 if not self.is_running_subprocess:

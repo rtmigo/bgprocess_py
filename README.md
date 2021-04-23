@@ -7,7 +7,7 @@ Tested on Linux and macOS with Python 3.7-3.9.
 # Install
 
 ``` bash
-$ pip install git+https://github.com/rtmigo/bgprocess_py
+$ pip install git+https://github.com/rtmigo/bgprocess_py#egg=bgprocess
 ```
 
 # Use
