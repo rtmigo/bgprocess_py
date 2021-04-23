@@ -15,7 +15,7 @@ with BackgroundProcess(["some_program", "arg1", "arg2"]) as bp:
         # waiting for the next line, but not too long
         str3 = bp.next_line(read_timeout=0.25)  # 0.25 seconds
         
-        # skipping lines until we get the line mathing the condition
+        # skipping lines until we get the line matching the condition
         str4 = bp.next_line(match = lambda line: line.startswith('a'))
     
         # skipping lines until we get the line matching the condition.
