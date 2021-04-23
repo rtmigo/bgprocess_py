@@ -1,1 +1,1 @@
-from process import BackgroundProcess, LineWaitingTimeout
+from .process import BackgroundProcess, LineWaitingTimeout
