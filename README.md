@@ -1,6 +1,6 @@
 Unpublished Python library for for reading the output of processes with a time limit.
 
-``` python
+``` python3
 
 from bgprocess import BackgroundProcess, LineWaitingTimeout
 
