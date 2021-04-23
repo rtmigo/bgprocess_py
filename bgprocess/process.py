@@ -169,7 +169,7 @@ class BackgroundProcess:
 
         self.terminate()
 
-    def read_line(self) -> Optional[str]:
+    def __next_line_simple(self) -> Optional[str]:
 
         # возвращает строку, как только фоновый процесс изволит ее напечатать.
         # Если процесс уже остановился, возвращает None.
@@ -200,9 +200,13 @@ class BackgroundProcess:
 
                 return retline
 
-    def wait_for_line(self, predicate: Callable[[str], bool], read_timeout=None, match_timeout=None) -> bool:
+    def next_line(self, match: Callable[[str], bool] = None, read_timeout=None, match_timeout=None) \
+            -> Optional[str]:
 
         # дожидается выдачи определенной строки сервером
+
+        if match is None and read_timeout is None and match_timeout is None:
+            return self.__next_line_simple()
 
         start_time = time.monotonic() if match_timeout is not None else None
 
@@ -234,19 +238,19 @@ class BackgroundProcess:
 
             if curr_line_timeout is not None:
                 try:
-                    line = func_timeout(func=self.read_line, timeout=curr_line_timeout)
+                    line = func_timeout(func=self.__next_line_simple, timeout=curr_line_timeout)
                 except FunctionTimedOut:
                     raise LineWaitingTimeout
             else:
-                line = self.read_line()
+                line = self.__next_line_simple()
 
             if line is None:
                 # процесс завершился, строка не найдена
-                return False
+                return None
 
-            if predicate(line):
+            if match(line):
                 # строка найдена
-                return True
+                return line
 
     @property
     def was_started(self):
@@ -264,7 +268,7 @@ class BackgroundProcess:
 
         while True:
 
-            line = self.read_line()
+            line = self.__next_line_simple()
             if line is None:
                 break
             yield line
@@ -280,21 +284,21 @@ class TestBackgroundProcess(unittest.TestCase):
     def testWaitLine(self):
         # успешно находим
         with BackgroundProcess(["echo", "lineA\nlineB\nlineC"]) as bp:
-            self.assertTrue(bp.wait_for_line(lambda s: s == "lineB"))
+            self.assertIsNotNone(bp.next_line(lambda s: s == "lineB"))
 
         # процесс завершается, но не находим
         with BackgroundProcess(["echo", "lineA\nlineB\nlineC"]) as bp:
-            self.assertFalse(bp.wait_for_line(lambda s: s == "lineZ"))
+            self.assertIsNone(bp.next_line(lambda s: s == "lineZ"))
 
         # ждем слишком долго - получаем исключение
         with self.assertRaises(LineWaitingTimeout):
             with BackgroundProcess(["sleep", "3"]) as bp:
-                bp.wait_for_line(lambda s: s == "never!", read_timeout=0.25)
+                bp.next_line(lambda s: s == "never!", read_timeout=0.25)
 
         # ждем слишком долго - получаем исключение
         with self.assertRaises(LineWaitingTimeout):
             with BackgroundProcess(["sleep", "3"]) as bp:
-                bp.wait_for_line(lambda s: s == "never!", match_timeout=0.25)
+                bp.next_line(lambda s: s == "never!", match_timeout=0.25)
 
 
 if __name__ == "__main__":
