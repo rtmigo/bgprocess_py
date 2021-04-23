@@ -73,6 +73,12 @@ class BackgroundProcess:
         assert self.is_running_subprocess
         assert self.is_running_thread
 
+        #time.sleep(2)
+
+        #self._subproc.wait()
+
+        #self._subproc.communicate()
+
     def start(self):
 
         if self._disposed:
@@ -120,6 +126,20 @@ class BackgroundProcess:
         # The SIGINT (“program interrupt”) signal is sent when the user types the INTR character (normally Ctrl-C)
         self._waited_subproc().send_signal(signal.SIGINT)
 
+    # def __close_process(self, timeout=10.0):
+    #     #p = self._waited_subproc()
+    #
+    #     #def try_close(io):
+    #      #   if io is not None:
+    #       #      io.close()
+    #
+    #     #try:
+    #     #p.wait(timeout=timeout)
+    #     #finally:
+    #      #   try_close(p.stdout)
+    #       #  try_close(p.stdin)
+    #        # try_close(p.stderr)
+
     def terminate(self):
 
         if self._disposed:
@@ -130,8 +150,17 @@ class BackgroundProcess:
             if self.is_running_subprocess:
                 self._terminate_ctrl_c()
                 self._terminate_polite()
-                self._waited_subproc().wait(timeout=self.termTimeout)
+                #self.__close_process(timeout=self.termTimeout)
+                #self._waited_subproc().wait(timeout=self.termTimeout)
                 self.thread.join(timeout=self.termTimeout)
+
+            # the following line closes opened stdout, stderr, stdin.
+            # Without it we'll get ResourceWarnings when running "setup.py test".
+            # We did not close stdout, stderr, stdin earlier, even if we could,
+            # because we wanted to be able to read stdout even after the process
+            # stopped running. Now we got explicit signal that the user does not
+            # need the process anymore, so it's ok to close now.
+            self._waited_subproc().communicate()
 
         # если join не сможет закрыть поток, никаких исключений не вылетит.
         # Узнать, что поток продолжает работать можно вызвав .is_alive()
