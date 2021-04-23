@@ -18,7 +18,7 @@ with BackgroundProcess(["some_program", "arg1", "arg2"]) as bp:
         # skipping lines until we get the line mathing the condition
         str4 = bp.next_line(match = lambda line: line.startswith('a'))
     
-        # skipping lines until we get the line mathing the condition.
+        # skipping lines until we get the line matching the condition.
         # But if we cannot find the matching line after 3 seconds, getting None 
         str5 = bp.next_line(
             match = lambda line: line.startswith('a'),
