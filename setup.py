@@ -14,7 +14,7 @@ setup(
   url='https://github.com/rtmigo/bgprocess_py',
 
   packages=find_packages(),
-  install_requires=[],
+  install_requires=['func-timeout'],
 
   description="Reads the output of a process line-by-line with a time limit",
 
