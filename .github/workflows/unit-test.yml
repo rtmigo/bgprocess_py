@@ -4,12 +4,12 @@ name: unit test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dev ]
     paths-ignore:
       - '**.md'
       - '**.txt'
   pull_request:
-    branches: [ master ]
+    branches: [ dev ]
     paths-ignore:
       - '**.md'
       - '**.txt'
