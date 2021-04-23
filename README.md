@@ -1,5 +1,9 @@
 Unpublished Python library for for reading the output of processes with a time limit.
 
+Tested on Linux and macOS with Python 3.7-3.9.
+
+---
+
 ``` python3
 from bgprocess import BackgroundProcess, LineWaitingTimeout
 
@@ -44,11 +48,3 @@ with BackgroundProcess(["some_program", "arg1", "arg2"]) as process:
 ```
 
 If the process is finished, `next_line` returns `None` instead of a `str`.
-
-
----
-
-Tested on Linux and macOS with Python 3.7-3.9.
-
-
-
