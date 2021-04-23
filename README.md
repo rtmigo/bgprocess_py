@@ -31,7 +31,7 @@ with BackgroundProcess(["some_program", "arg1", "arg2"]) as bp:
         print("Timeout!")
 ```
 
-If the process is finished, `next_line` returns `None`.
+If the process is finished, `next_line` returns `None` instead of a `str`.
 
 
 
