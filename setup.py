@@ -7,7 +7,7 @@ readme = (Path(__file__).parent / 'README.md').read_text()
 
 setup(
   name="bgprocess",
-  version="1.0.0",
+  version="1.0.1",
 
   author="Artёm IG",
   author_email="ortemeo@gmail.com",
