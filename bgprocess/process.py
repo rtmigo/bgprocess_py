@@ -130,6 +130,7 @@ class BackgroundProcess:
             if self.is_running_subprocess:
                 self._terminate_ctrl_c()
                 self._terminate_polite()
+                self._waited_subproc().wait(timeout=self.termTimeout)
                 self.thread.join(timeout=self.termTimeout)
 
         # если join не сможет закрыть поток, никаких исключений не вылетит.
