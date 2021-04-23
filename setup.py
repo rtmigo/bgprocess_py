@@ -28,7 +28,6 @@ setup(
   # https://pypi.org/classifiers/
   classifiers=[
     "Development Status :: 4 - Beta",
-    # "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
     'License :: OSI Approved :: MIT License',
     'Topic :: Software Development :: Documentation',
@@ -37,6 +36,7 @@ setup(
     "Programming Language :: Python :: 3.9",
     "Operating System :: POSIX",
   ],
+
 
   # test_suite='nose.collector',
   # tests_require=['nose'],

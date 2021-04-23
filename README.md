@@ -4,6 +4,14 @@ Tested on Linux and macOS with Python 3.7-3.9.
 
 ---
 
+# Install
+
+``` bash
+$ pip install git+https://github.com/rtmigo/bgprocess_py
+```
+
+# Use
+
 ``` python3
 from bgprocess import BackgroundProcess, LineWaitingTimeout
 
