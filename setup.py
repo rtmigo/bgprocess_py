@@ -36,11 +36,4 @@ setup(
     "Programming Language :: Python :: 3.9",
     "Operating System :: POSIX",
   ],
-
-  test_suite='test_unit.suite',
-  tests_require=[],
-
-  # test_suite='nose.collector',
-  # tests_require=['nose'],
-  # zip_safe=False
 )
