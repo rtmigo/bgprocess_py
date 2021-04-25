@@ -1,39 +1,42 @@
+from importlib.machinery import SourceFileLoader
 from pathlib import Path
 
 from setuptools import setup, find_packages
 
+constants = SourceFileLoader('constants', 'bgprocess/constants.py').load_module()
+
 readme = (Path(__file__).parent / 'README.md').read_text()
-#readme = "# "+readme.partition("\n#")[-1]
 
 setup(
-  name="bgprocess",
-  version="1.0.2",
+    name="bgprocess",
+    version=constants.__version__,
 
-  author="Artёm IG",
-  author_email="ortemeo@gmail.com",
-  url='https://github.com/rtmigo/bgprocess_py',
+    author="Artёm IG",
+    author_email="ortemeo@gmail.com",
+    url='https://github.com/rtmigo/bgprocess_py#bgprocess',
 
-  packages=find_packages(),
-  install_requires=['func-timeout'],
+    packages=find_packages(),
+    install_requires=['func-timeout'],
 
-  description="Reads the output of a process line-by-line with a time limit",
+    description="Reads the output of a process line-by-line with a time limit",
 
-  long_description=readme,
-  long_description_content_type='text/markdown',
+    long_description=readme,
+    long_description_content_type='text/markdown',
 
-  license='MIT',
+    license='MIT',
 
-  keywords="""process output timeout""".split(),
+    keywords="""process output timeout""".split(),
 
-  # https://pypi.org/classifiers/
-  classifiers=[
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    'License :: OSI Approved :: MIT License',
-    'Topic :: Software Development :: Documentation',
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Operating System :: POSIX",
-  ],
+    # https://pypi.org/classifiers/
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        'License :: OSI Approved :: MIT License',
+        'Topic :: Software Development :: Documentation',
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Operating System :: POSIX",
+    ],
 )

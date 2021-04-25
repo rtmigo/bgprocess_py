@@ -1,4 +1,6 @@
-Unpublished Python library for for reading the output of processes with a time limit.
+# [bgprocess](https://github.com/rtmigo/bgprocess_py#bgprocess)
+
+Reads the output of a process line-by-line with a time limit.
 
 Tested on Linux and macOS with Python 3.7-3.9.
 
