@@ -1,3 +1,7 @@
 #!/bin/bash
 
-python3 -c "import bgprocess; print(bgprocess.__version__)"
+python3 -c '
+import importlib.machinery;
+print(
+  importlib.machinery.SourceFileLoader("_", "bgprocess/constants.py")
+  .load_module().__version__)'
