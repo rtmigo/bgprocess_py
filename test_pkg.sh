@@ -1,5 +1,10 @@
 #!/bin/bash
-set -e && source pyrel.sh
+set -e
+
+# check we can extract the package version
+.github/package_version.sh
+
+source pyrel.sh
 
 # build package, install it into virtual
 # environment with pip
