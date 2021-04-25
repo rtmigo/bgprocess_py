@@ -3,3 +3,5 @@
 
 from .process import BackgroundProcess, LineWaitingTimeout
 
+from .constants import *
+
