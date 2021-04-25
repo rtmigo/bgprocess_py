@@ -35,7 +35,8 @@ class BackgroundProcess:
     # Пока процесс не остановлен, работает и поток. Если процесс уже отработал или выкинул ошибку, сначала
     # остановится процесс, потом поток.
 
-    def __init__(self, args: List[str], term_timeout=1, buffer_output=False, print_output=False,
+    def __init__(self, args: List[str], term_timeout=1, buffer_output=False,
+                 print_output=False,
                  add_env: Dict[str, str] = None):
 
         self._subproc: Optional[Popen] = None
@@ -87,27 +88,28 @@ class BackgroundProcess:
 
     def _terminate_polite(self):
 
-        # The SIGTERM signal is a generic signal used to cause program termination. Unlike SIGKILL, this signal can be
-        # blocked, handled, and ignored. It is the normal way to politely ask a program to terminate. The shell
-        # command kill generates SIGTERM by default.
+        # "The SIGTERM signal is a generic signal used to cause program
+        #  termination. Unlike SIGKILL, this signal can be blocked, handled, and
+        #  ignored. It is the normal way to politely ask a program to terminate.
+        #  The shell command kill generates SIGTERM by default."
 
         try:
             os.kill(self._waited_subproc().pid, signal.SIGTERM)
-        except ProcessLookupError:  # ProcessLookupError: [Errno 3] No such process
-            # похоже, процесс уже завершен
+        except ProcessLookupError:
+            # ProcessLookupError: [Errno 3] No such process
             pass
 
     def _terminate_brute(self):
 
-        # я пробовал использовать этот метод, но он приносил больше проблем, чем пользы. Например, из-за
-        # него сервер Flask/Werkzeug не освобождал порт и вообще не выгружался. Что странно, ведь я это делал
-        # после SIGINT и SIGTERM. Но без последующего SIGKILL все закрывалось, а с SIGKILL оставался занят порт
-        # и оставалось висеть приложение.
-        #
+        # The SIGKILL signal is used to cause immediate program termination.
+        # It cannot be handled or ignored, and is therefore always fatal. It is
+        # also not possible to block this signal.
 
-        # The SIGKILL signal is used to cause immediate program termination. It cannot be handled or ignored, and is
-        # therefore always fatal. It is also not possible to block this signal. # The SIGTERM signal is a generic
-        # signal used to cause program termination. Unlike SIGKILL, this signal can be
+        # я пробовал использовать этот метод, но он приносил больше проблем,
+        # чем пользы. Например, из-за него сервер Flask/Werkzeug не освобождал
+        # порт и вообще не выгружался. Что странно, ведь я это делал после
+        # SIGINT и SIGTERM. Но без последующего SIGKILL все закрывалось,
+        # а с SIGKILL оставался занят порт и оставалось висеть приложение.
 
         try:
             os.kill(self._waited_subproc().pid, signal.SIGKILL)
@@ -209,7 +211,8 @@ class BackgroundProcess:
 
                 return retline
 
-    def next_line(self, match: Callable[[str], bool] = None, read_timeout=None, match_timeout=None) \
+    def next_line(self, match: Callable[[str], bool] = None, read_timeout=None,
+                  match_timeout=None) \
             -> Optional[str]:
 
         # дожидается выдачи определенной строки сервером
@@ -247,7 +250,8 @@ class BackgroundProcess:
 
             if curr_line_timeout is not None:
                 try:
-                    line = func_timeout(func=self.__next_line_simple, timeout=curr_line_timeout)
+                    line = func_timeout(func=self.__next_line_simple,
+                                        timeout=curr_line_timeout)
                 except FunctionTimedOut:
                     raise LineWaitingTimeout
             else:
