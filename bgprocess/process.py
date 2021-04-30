@@ -7,6 +7,7 @@ import subprocess
 import threading
 import time
 import unittest
+from pathlib import Path
 from subprocess import Popen
 from typing import *
 
@@ -19,27 +20,14 @@ class LineWaitingTimeout(Exception):
 
 class BackgroundProcess:
 
-    # я создал этот класс с конкретной целью: запускать HTTP-сервер в параллельном процессе, тогда как текущий
-    # процесс запускает юниттесты.
-    #
-    # Пример использования: запускаем приложение и читаем строки, пока не встретим какую-то специальную
-    #
-    # with BackgroundProcess(["prog", "-arg1", "-arg2"]) as bp:
-    #   for line in bp.iterLines():
-    #     if something in line:
-    #       break
-    #
-    # Важно для понимания принципа: хотя обычно поток это часть процесса, в данном случае, наоборот:
-    # образно говоря, фоновый процесс Popen работает "внутри" параллельного потока Thread.
-    #
-    # Пока процесс не остановлен, работает и поток. Если процесс уже отработал или выкинул ошибку, сначала
-    # остановится процесс, потом поток.
-
     def __init__(self, args: List[str], term_timeout=1, buffer_output=False,
                  print_output=False,
-                 add_env: Dict[str, str] = None):
+                 add_env: Dict[str, str] = None,
+                 cwd: str = None):
 
         self._subproc: Optional[Popen] = None
+
+        self.cwd = cwd
 
         self.args = args
 
@@ -47,8 +35,9 @@ class BackgroundProcess:
 
         self._disposed = False
 
-        # чтобы закрыть программу, мы будем отправлять ей сигналы: вежливые и не очень.
-        # После сигнала мы будем ждать столько секунд, что программа отреагирует:
+        # чтобы закрыть программу, мы будем отправлять ей сигналы: вежливые и
+        # не очень. После сигнала мы будем ждать столько секунд, что программа
+        # отреагирует:
         self.termTimeout: float = term_timeout
 
         # self.bufferOutput = self.bufferOutput
@@ -68,6 +57,7 @@ class BackgroundProcess:
             stdout=subprocess.PIPE,
             stdin=subprocess.PIPE,
             stderr=subprocess.STDOUT,
+            cwd=self.cwd,
             env=self._env,
             close_fds=True)
 
@@ -312,6 +302,16 @@ class TestBackgroundProcess(unittest.TestCase):
         with self.assertRaises(LineWaitingTimeout):
             with BackgroundProcess(["sleep", "3"]) as bp:
                 bp.next_line(lambda s: s == "never!", match_timeout=0.25)
+
+    def test_cwd_set(self):
+        for d in [Path(__file__).parent,
+                  Path(__file__).parent.parent / '.github']:
+            with BackgroundProcess(["pwd"], cwd=str(d)) as bp:
+                self.assertEqual(bp.next_line(), str(d))
+
+    def test_cwd_unset(self):
+        with BackgroundProcess(["pwd"]) as bp:
+            self.assertEqual(bp.next_line(), str(Path('.').absolute()))
 
 
 if __name__ == "__main__":
